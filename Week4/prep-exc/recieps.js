@@ -47,7 +47,7 @@ Relationships are not very complex, and updates are usually limited to things li
 In this scenario, MongoDB is more flexible and faster to work with.
 However, for large-scale applications with millions of recipes,
 I think PostgreSQL would be more efficient.
-In MongoDB, you need to insert all the steps and ingredients every time you create a recipe,
+In MongoDB, i need to insert all the steps and ingredients every time you create a recipe,
 which can lead to duplication. With SQL, the data is more normalized and structured,
 which makes updates and inserts easier to manage in the long run.
 PostgreSQL also provides stronger consistency and better performance for complex queries when dealing with very large amounts of data.*/
@@ -55,9 +55,3 @@ PostgreSQL also provides stronger consistency and better performance for complex
 
 
 
-/////////
-//Assumptions I made:
-//Main use case: browsing full recipes.
-//Steps are always recipe-specific, so embedding avoids extra queries.
-//Ingredients might be queried independently across recipes, so keeping them separate is more practical.
-//Categories are reused, so normalizing them is useful.
