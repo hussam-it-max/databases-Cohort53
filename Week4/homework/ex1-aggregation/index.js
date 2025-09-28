@@ -23,24 +23,17 @@ async function getInformationOfPopulation(client, year, age) {
     .db(dbName)
     .collection("population")
     .aggregate([
+      { $match: { Year: year, Age: age } },
       { $addFields: { totalPopulation: { $add: ["$M", "$F"] } } },
-      { $match: { Age: age, Year: year } },
-    ]);
-  return res.toArray();
-}
-async function group(client, country, year) {
-  const res = await client
-    .db(dbName)
-    .collection("population")
-    .aggregate([
-      { $match: { Country: country, Year: year } },
       {
         $group: {
-          _id: null,
-          totalpopulation: { $sum: { $add: ["$M", "$F"] } },
+          _id: "$Continent",
+          totalPopulation: { $sum: "$totalPopulation" },
         },
       },
+      { $sort: { _id: 1 } },
     ]);
+
   return res.toArray();
 }
 
