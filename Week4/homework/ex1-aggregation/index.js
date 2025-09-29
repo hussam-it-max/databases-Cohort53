@@ -23,7 +23,6 @@ async function getInformationOfPopulation(client, year, age) {
     .db(dbName)
     .collection("population")
     .aggregate([
-      // Step 1: filter by year, age, and continent-level docs
       {
         $match: {
           Year: year,
@@ -40,8 +39,6 @@ async function getInformationOfPopulation(client, year, age) {
           },
         },
       },
-
-      // Step 2: add new field
       {
         $addFields: {
           TotalPopulation: { $add: ["$M", "$F"] },
