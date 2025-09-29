@@ -23,15 +23,30 @@ async function getInformationOfPopulation(client, year, age) {
     .db(dbName)
     .collection("population")
     .aggregate([
-      { $match: { Year: year, Age: age } },
-      { $addFields: { totalPopulation: { $add: ["$M", "$F"] } } },
+      // Step 1: filter by year, age, and continent-level docs
       {
-        $group: {
-          _id: "$Continent",
-          totalPopulation: { $sum: "$totalPopulation" },
+        $match: {
+          Year: year,
+          Age: age,
+          Country: {
+            $in: [
+              "AFRICA",
+              "ASIA",
+              "EUROPE",
+              "OCEANIA",
+              "NORTH AMERICA",
+              "SOUTH AMERICA",
+            ],
+          },
         },
       },
-      { $sort: { _id: 1 } },
+
+      // Step 2: add new field
+      {
+        $addFields: {
+          TotalPopulation: { $add: ["$M", "$F"] },
+        },
+      },
     ]);
 
   return res.toArray();
@@ -42,9 +57,6 @@ async function main() {
   try {
     await client.connect();
     console.log("Connected successfully to server");
-    const information = await group(client, "Netherlands", 2020);
-    console.log("Information:", information);
-
     const totalPopulation = await getTotalPopulation(client, "Netherlands");
     console.log("Total Population:", totalPopulation);
     const informationOfPopulation = await getInformationOfPopulation(
